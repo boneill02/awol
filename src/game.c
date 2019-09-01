@@ -1,8 +1,20 @@
 /*
-    Project: AWOL
-    File: game.c
-    File Author(s): Benjamin O'Neill <benjaminmoneill@gmail.com>
-    License: GNU GPL v2
+    AWOL: A 2D top down survival sandbox game
+    Copyright (C) 2019 Benjamin O'Neill <benjaminmoneill@gmail.com>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "game.h"
@@ -14,6 +26,7 @@
 
 bool keymap[4];
 Entity *render_queue[MAX_RENDERABLES];
+SDL_Texture *spritesheet;
 uuid_t *player_uuid;
 int render_queue_len = 0;
 
@@ -43,15 +56,11 @@ void init_player(void)
 	Entity *player = add_entity();
 	player_uuid = &(player->uuid);
 
-	TextureComponent *texture_component = (TextureComponent *) create_component(COMPONENT_TEXTURE);
+	TextureComponent *texture_component = create_texture_component(spritesheet, 1, 1);
 	PositionComponent *position_component = (PositionComponent *) create_component(COMPONENT_POSITION);
 
 	position_component->x = 300;
 	position_component->y = 100;
-
-	texture_component->texture = load_texture("assets/player.png");
-	texture_component->src.w = 16;
-	texture_component->src.h = 16;
 
 	attach_component(player, (Component *) texture_component);
 	attach_component(player, (Component *) position_component);
@@ -69,7 +78,8 @@ void init(void)
 	game->display.window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
 	game->display.renderer = SDL_CreateRenderer(game->display.window, 0, SDL_RENDERER_ACCELERATED);
-
+	
+	spritesheet = load_texture("assets/playersheet.png");
 	init_player();
 }
 

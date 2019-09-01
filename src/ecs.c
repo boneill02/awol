@@ -1,8 +1,20 @@
 /*
-    Project: AWOL
-    File: ecs.c
-    File Author(s): Benjamin O'Neill <benjaminmoneill@gmail.com>
-    License: GNU GPL v2
+    AWOL: A 2D top down survival sandbox game
+    Copyright (C) 2019 Benjamin O'Neill <benjaminmoneill@gmail.com>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "ecs.h"
@@ -13,6 +25,7 @@ typedef struct {
 
 ECS *ecs;
 
+/* Add a component to the specified entity */
 void attach_component(Entity *entity, Component *component)
 {
 	/* TODO error checking */
@@ -24,6 +37,7 @@ void attach_component(Entity *entity, Component *component)
 	}
 }
 
+/* Remove the specified component from its entity and free the memory */
 bool remove_component(Entity *entity, uuid_t uuid)
 {
 	for (int i = 0; i < MAX_COMPONENTS; i++) {
@@ -36,6 +50,7 @@ bool remove_component(Entity *entity, uuid_t uuid)
 	return false;
 }
 
+/* Create a component of the specified type */
 Component *create_component(int component_type)
 {
 	Component *component;
@@ -58,6 +73,7 @@ Component *create_component(int component_type)
 	return component;
 }
 
+/* Create an entity and add it to the ECS. */
 Entity *add_entity(void)
 {
 	/* TODO protect against too many entities */
@@ -75,6 +91,7 @@ Entity *add_entity(void)
 	return NULL;
 }
 
+/* Remove the entity from the ECS and free its memory. */
 bool remove_entity(uuid_t uuid)
 {
 	for (int i = 0; i < MAX_ENTITIES; i++) {
@@ -87,6 +104,7 @@ bool remove_entity(uuid_t uuid)
 	return false;
 }
 
+/* Get the entity with the specified UUID. */
 Entity *get_entity(uuid_t uuid)
 {
 	for (int i = 0; i < MAX_ENTITIES; i++) {
@@ -97,6 +115,8 @@ Entity *get_entity(uuid_t uuid)
 	return NULL;
 }
 
+/* Get the first component owned by the specified entity that is of the
+   specified type. */
 Component *get_component_by_type(Entity *entity, int component_type)
 {
 	for (int i = 0; i < MAX_COMPONENTS; i++)
@@ -106,6 +126,7 @@ Component *get_component_by_type(Entity *entity, int component_type)
 	return NULL;
 }
 
+/* Get the component owned by the specified entity that has the specified UUID. */
 Component *get_component_by_uuid(Entity *entity, uuid_t uuid)
 {
 	for (int i = 0; i < MAX_COMPONENTS; i++) {
@@ -117,12 +138,14 @@ Component *get_component_by_uuid(Entity *entity, uuid_t uuid)
 	return NULL;
 }
 
+/* Initialize the ECS. */
 void init_ecs(void)
 {
 	ecs = malloc(sizeof(ECS));
 	memset(ecs, 0, sizeof(ECS));
 }
 
+/* Deinitialize the ECS. Delete all components and entities. */
 void quit_ecs(void)
 {
 	for (int i = 0; i < MAX_ENTITIES; i++) {
