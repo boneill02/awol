@@ -1,6 +1,6 @@
 PREFIX ?= /usr/local
-MANPREFIX = $(PREFIX)/share/man
+MANPREFIX ?= $(PREFIX)/share/man
 
-CC = gcc
-CFLAGS = -Wall -std=c99 -pedantic
-LDFLAGS = -s
+CC ?= gcc
+CFLAGS ?= -Wall -std=c99 -pedantic
+LDFLAGS ?= -s
