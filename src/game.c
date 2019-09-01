@@ -40,15 +40,24 @@ void update_keys(void)
 {
 	Entity *player = get_entity(*player_uuid);
 	PositionComponent *pos = (PositionComponent *) get_component_by_type(player, COMPONENT_POSITION);
+	DirectionComponent *dir = (DirectionComponent *) get_component_by_type(player, COMPONENT_DIRECTION);
 
-	if (keymap[0])
+	if (keymap[0]) {
 		pos->y--;
-	if (keymap[1])
-		pos->x--;
-	if (keymap[2])
+		dir->direction = DIRECTION_UP;
+	}
+	if (keymap[2]) {
+		dir->direction = DIRECTION_DOWN;
 		pos->y++;
-	if (keymap[3])
+	}
+	if (keymap[1]) {
+		dir->direction = DIRECTION_LEFT;
+		pos->x--;
+	}
+	if (keymap[3]) {
+		dir->direction = DIRECTION_RIGHT;
 		pos->x++;
+	}
 }
 
 void init_player(void)
@@ -56,14 +65,21 @@ void init_player(void)
 	Entity *player = add_entity();
 	player_uuid = &(player->uuid);
 
-	TextureComponent *texture_component = create_texture_component(spritesheet, 1, 1);
-	PositionComponent *position_component = (PositionComponent *) create_component(COMPONENT_POSITION);
+	DirectionComponent *direction = (DirectionComponent *) create_component(COMPONENT_DIRECTION);
+	PositionComponent *position = (PositionComponent *) create_component(COMPONENT_POSITION);
 
-	position_component->x = 300;
-	position_component->y = 100;
+	position->x = 300;
+	position->y = 100;
 
-	attach_component(player, (Component *) texture_component);
-	attach_component(player, (Component *) position_component);
+	direction->direction = DIRECTION_DOWN;
+
+	direction->textures[DIRECTION_UP] = (TextureComponent *) create_texture_component(spritesheet, 1, 0);
+	direction->textures[DIRECTION_DOWN] = (TextureComponent *) create_texture_component(spritesheet, 1, 1);
+	direction->textures[DIRECTION_RIGHT] = (TextureComponent *) create_texture_component(spritesheet, 1, 2);
+	direction->textures[DIRECTION_LEFT] = (TextureComponent *) create_texture_component(spritesheet, 1, 3);
+
+	attach_component(player, (Component *) direction);
+	attach_component(player, (Component *) position);
 	add_renderable_to_queue(player);
 }
 
@@ -118,19 +134,34 @@ void tick(void)
 
 void render(void)
 {
+	DirectionComponent *dir;
 	TextureComponent *tex;
 	PositionComponent *pos;
 	SDL_Rect *dest;
 
 	SDL_SetRenderDrawColor(game->display.renderer, 255, 255, 255, 0);
 	SDL_RenderClear(game->display.renderer);
-
+	
 	for (int i = 0; i < render_queue_len; i++) {
 		tex = (TextureComponent *) get_component_by_type(render_queue[i], COMPONENT_TEXTURE);
 		pos = (PositionComponent *) get_component_by_type(render_queue[i], COMPONENT_POSITION);
+
 		if (tex == NULL) {
-			printf("Entity without texture tried to render\n");
-		} else if (pos == NULL) {
+			/* If it has no default texture, must be direction based */
+			dir = (DirectionComponent *) get_component_by_type(render_queue[i], COMPONENT_DIRECTION);
+			if (dir == NULL) {
+				printf("Entity without texture tried to render\n");
+				continue;
+			} else {
+				tex = dir->textures[dir->direction];
+				if (tex == NULL) {
+					printf("Entity without texture tried to render\n");
+					continue;
+				}
+			}
+		}
+
+		if (pos == NULL) {
 			printf("Entity without position tried to render\n");
 		} else {
 			dest = get_dest_rect(tex, pos);

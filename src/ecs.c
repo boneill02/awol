@@ -62,6 +62,9 @@ Component *create_component(int component_type)
 		case COMPONENT_TEXTURE:
 			size = sizeof(TextureComponent);
 			break;
+		case COMPONENT_DIRECTION:
+			size = sizeof(DirectionComponent);
+			break;
 		default:
 			return NULL;
 	}
@@ -120,8 +123,9 @@ Entity *get_entity(uuid_t uuid)
 Component *get_component_by_type(Entity *entity, int component_type)
 {
 	for (int i = 0; i < MAX_COMPONENTS; i++)
-		if (entity->components[i]->type == component_type)
-			return entity->components[i];
+		if (entity->components[i] != NULL)
+			if (entity->components[i]->type == component_type)
+				return entity->components[i];
 
 	return NULL;
 }

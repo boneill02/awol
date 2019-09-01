@@ -30,7 +30,15 @@
 
 enum {
 	COMPONENT_POSITION,
-	COMPONENT_TEXTURE
+	COMPONENT_TEXTURE,
+	COMPONENT_DIRECTION,
+};
+
+enum {
+	DIRECTION_UP,
+	DIRECTION_DOWN,
+	DIRECTION_LEFT,
+	DIRECTION_RIGHT,
 };
 
 typedef struct {
@@ -48,6 +56,12 @@ typedef struct {
 	SDL_Texture *texture;
 	SDL_Rect src;
 } TextureComponent;
+
+typedef struct {
+	Component parent;
+	int direction;
+	TextureComponent *textures[5];
+} DirectionComponent;
 
 typedef struct {
 	uuid_t uuid;
