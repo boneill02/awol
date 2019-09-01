@@ -1,3 +1,10 @@
+/*
+    Project: AWOL
+    File: game.c
+    File Author(s): Benjamin O'Neill <benjaminmoneill@gmail.com>
+    License: GNU GPL v2
+*/
+
 #include "game.h"
 #include "graphics.h"
 

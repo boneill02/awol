@@ -1,3 +1,10 @@
+/*
+    Project: AWOL
+    File: ecs.c
+    File Author(s): Benjamin O'Neill <benjaminmoneill@gmail.com>
+    License: GNU GPL v2
+*/
+
 #include "ecs.h"
 
 typedef struct {

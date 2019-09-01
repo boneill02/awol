@@ -1,5 +1,12 @@
-#ifndef D_ECS_H
-#define D_ECS_H
+/*
+    Project: AWOL
+    File: ecs.h
+    File Author(s): Benjamin O'Neill <benjaminmoneill@gmail.com>
+    License: GNU GPL v2
+*/
+
+#ifndef AWOL_ECS_H
+#define AWOL_ECS_H
 
 #include <stdbool.h>
 #include <uuid/uuid.h>

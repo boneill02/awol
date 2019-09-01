@@ -1,3 +1,10 @@
+/*
+    Project: AWOL
+    File: graphics.h
+    File Author(s): Benjamin O'Neill <benjaminmoneill@gmail.com>
+    License: GNU GPL v2
+*/
+
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
