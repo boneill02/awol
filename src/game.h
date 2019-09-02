@@ -28,9 +28,12 @@
 #define STATE_PLAY 2
 
 #define TEXTURE_SIZE  16
-#define TEXTURE_SCALE 8
+#define TEXTURE_SCALE 4
 #define FPS 60
-#define MAX_RENDERABLES 256
+#define MAX_RENDERABLES 2048
+#define MAP_WIDTH 32
+#define MAP_HEIGHT 32
+#define PLAYER_SPEED 4
 
 typedef struct {
 	SDL_Window *window;

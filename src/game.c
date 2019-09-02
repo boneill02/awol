@@ -43,20 +43,41 @@ void update_keys(void)
 	DirectionComponent *dir = (DirectionComponent *) get_component_by_type(player, COMPONENT_DIRECTION);
 
 	if (keymap[0]) {
-		pos->y--;
+		pos->y -= PLAYER_SPEED;
 		dir->direction = DIRECTION_UP;
 	}
 	if (keymap[2]) {
 		dir->direction = DIRECTION_DOWN;
-		pos->y++;
+		pos->y += PLAYER_SPEED;
 	}
 	if (keymap[1]) {
 		dir->direction = DIRECTION_LEFT;
-		pos->x--;
+		pos->x -= PLAYER_SPEED;
 	}
 	if (keymap[3]) {
 		dir->direction = DIRECTION_RIGHT;
-		pos->x++;
+		pos->x += PLAYER_SPEED;
+	}
+}
+
+void init_map(void)
+{
+	for (int x = 0; x < MAP_WIDTH; x++) {
+		for (int y = 0; y < MAP_HEIGHT; y++) {
+			Entity *tile = add_entity();
+			TextureComponent *tex;
+			if (rand() % 2 == 1) {
+				tex = create_texture_component(spritesheet, 4, 1);
+			} else {
+				tex = create_texture_component(spritesheet, 7, 1);
+			}
+			PositionComponent *pos = (PositionComponent *) create_component(COMPONENT_POSITION);
+			pos->x = x * TEXTURE_SIZE * TEXTURE_SCALE;
+			pos->y = y * TEXTURE_SIZE * TEXTURE_SCALE;
+			attach_component(tile, (Component *) tex);
+			attach_component(tile, (Component *) pos);
+			add_renderable_to_queue(tile);
+		}
 	}
 }
 
@@ -92,10 +113,11 @@ void init(void)
 	game = malloc(sizeof(Game));
 	game->state = STATE_PLAY;
 	game->display.window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
+			SDL_WINDOWPOS_CENTERED, 960, 640, SDL_WINDOW_SHOWN);
 	game->display.renderer = SDL_CreateRenderer(game->display.window, 0, SDL_RENDERER_ACCELERATED);
 	
-	spritesheet = load_texture("assets/playersheet.png");
+	spritesheet = load_texture("assets/spritesheet.png");
+	init_map();
 	init_player();
 }
 
