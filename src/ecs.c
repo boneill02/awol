@@ -28,13 +28,13 @@ ECS *ecs;
 /* Add a component to the specified entity */
 void attach_component(Entity *entity, Component *component)
 {
-	/* TODO error checking */
 	for (int i = 0; i < MAX_COMPONENTS; i++) {
 		if (entity->components[i] == NULL) {
 			entity->components[i] = component;
 			return;
 		}
 	}
+	printf("Couldn't attach component to entity because it was full.");
 }
 
 /* Remove the specified component from its entity and free the memory */
@@ -79,7 +79,6 @@ Component *create_component(int component_type)
 /* Create an entity and add it to the ECS. */
 Entity *add_entity(void)
 {
-	/* TODO protect against too many entities */
 	int i;
 	for (i = 0; i < MAX_ENTITIES; i++) {
 		if (ecs->entities[i] == NULL) {
@@ -90,7 +89,9 @@ Entity *add_entity(void)
 			return ecs->entities[i];
 		}
 	}
-	
+
+	printf("Couldn't create an entity. There are too many already.");
+
 	return NULL;
 }
 
