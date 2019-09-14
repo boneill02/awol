@@ -94,10 +94,10 @@ void init_player(void)
 
 	direction->direction = DIRECTION_DOWN;
 
-	direction->textures[DIRECTION_UP] = (TextureComponent *) create_texture_component(spritesheet, 1, 0);
-	direction->textures[DIRECTION_DOWN] = (TextureComponent *) create_texture_component(spritesheet, 1, 1);
-	direction->textures[DIRECTION_RIGHT] = (TextureComponent *) create_texture_component(spritesheet, 1, 2);
-	direction->textures[DIRECTION_LEFT] = (TextureComponent *) create_texture_component(spritesheet, 1, 3);
+	direction->textures[DIRECTION_UP] = (TextureComponent *) create_texture_component(spritesheet, 0, 1);
+	direction->textures[DIRECTION_DOWN] = (TextureComponent *) create_texture_component(spritesheet, 0, 2);
+	direction->textures[DIRECTION_RIGHT] = (TextureComponent *) create_texture_component(spritesheet, 0, 3);
+	direction->textures[DIRECTION_LEFT] = (TextureComponent *) create_texture_component(spritesheet, 0, 0);
 
 	attach_component(player, (Component *) direction);
 	attach_component(player, (Component *) position);
