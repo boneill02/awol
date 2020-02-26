@@ -185,6 +185,7 @@ void render(void)
 
 		if (pos == NULL) {
 			printf("Entity without position tried to render\n");
+			continue;
 		} else {
 			dest = get_dest_rect(tex, pos);
 			SDL_RenderCopy(game->display.renderer, tex->texture, &(tex->src), dest);
