@@ -17,3 +17,8 @@ That's all you can do at the moment. The art is definitely not final. This is
 a hobby project to play around and practice programming, not meant to be a big
 successful game, so don't expect much. Maybe you can learn something from the
 code though!
+
+## License
+
+Copyright (C) 2019-2021 Ben O'Neill <ben@benoneill.xyz>. License: MIT.
+See LICENSE for more details.
