@@ -29,6 +29,7 @@ Entity *render_queue[MAX_RENDERABLES];
 SDL_Texture *spritesheet;
 uuid_t *player_uuid;
 int render_queue_len = 0;
+Game *game;
 
 void add_renderable_to_queue(Entity *renderable)
 {
@@ -215,4 +216,9 @@ void start_game(void)
 	}
 
 	cleanup();
+}
+
+Game *get_game(void)
+{
+	return game;
 }

@@ -68,15 +68,15 @@ typedef struct {
 	Component *components[MAX_COMPONENTS];
 } Entity;
 
-void        attach_component(Entity *entity, Component *component);
-bool        remove_component(Entity *entity, uuid_t uuid);
-Component   *create_component(int component_type);
-Entity      *add_entity(void);
-bool        remove_entity(uuid_t uuid);
-Entity      *get_entity(uuid_t uuid);
-Component   *get_component_by_type(Entity *entity, int component_type);
-Component   *get_component_by_uuid(Entity *entity, uuid_t uuid);
-void        init_ecs(void);
-void        quit_ecs(void);
+Entity *add_entity(void);
+void attach_component(Entity *entity, Component *component);
+Component *create_component(int component_type);
+Component *get_component_by_type(Entity *entity, int component_type);
+Component *get_component_by_uuid(Entity *entity, uuid_t uuid);
+Entity *get_entity(uuid_t uuid);
+void init_ecs(void);
+void quit_ecs(void);
+bool remove_component(Entity *entity, uuid_t uuid);
+bool remove_entity(uuid_t uuid);
 
 #endif

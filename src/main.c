@@ -26,5 +26,5 @@ int main(int argc, char *argv[])
 {
 	srand(time(NULL));
 	start_game();
-	return 0;
+	return EXIT_SUCCESS;
 }

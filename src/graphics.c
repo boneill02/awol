@@ -19,7 +19,9 @@
 
 #include "graphics.h"
 
+#ifndef GAME_H
 #include "game.h"
+#endif
 
 /* Load an image file as a texture. */
 SDL_Texture *load_texture(const char *path)
@@ -34,10 +36,11 @@ SDL_Texture *load_texture(const char *path)
 		return NULL;
 	}
 
-	res = SDL_CreateTextureFromSurface(game->display.renderer, temp_surf);
+	res = SDL_CreateTextureFromSurface(get_game()->display.renderer, temp_surf);
 
 	if (res == NULL) {
 		printf("Warning: Couldn't create texture from surface\n");
+		return NULL;
 	}
 
 	SDL_FreeSurface(temp_surf);

@@ -26,7 +26,7 @@
 #include "ecs.h"
 
 SDL_Texture *load_texture(const char *path);
-SDL_Rect    *get_dest_rect(TextureComponent *tex, PositionComponent *pos);
+SDL_Rect *get_dest_rect(TextureComponent *tex, PositionComponent *pos);
 TextureComponent *create_texture_component(SDL_Texture *sheet, int x, int y);
 
 #endif
