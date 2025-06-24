@@ -4,5 +4,5 @@ PREFIX ?= /usr/local
 MANPREFIX ?= $(PREFIX)/share/man
 
 CC = gcc
-CFLAGS = -Werror -std=c99 -pedantic -O2
+CFLAGS = -Werror -std=gnu99 -pedantic -O2
 LDFLAGS = -s
