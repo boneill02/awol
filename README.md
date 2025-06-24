@@ -23,9 +23,9 @@ code though!
 
 ## Bugs
 
-Submit an issue. Email me a patch or submit a PR if you've fixed it.
+If you find a bug, submit an issue, PR, or email me with a description and/or patch.
 
 ## License
 
-Copyright (C) 2019-2021 Ben O'Neill <ben@oneill.sh>. License: MIT.
-See [LICENSE](LICENSE) for more details.
+Copyright (c) 2019-2021 Ben O'Neill <ben@oneill.sh>. This work is released under
+the terms of the MIT License. See [LICENSE](LICENSE) for the license terms.
