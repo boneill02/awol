@@ -1,7 +1,9 @@
-/*
-    AWOL: A 2D top down survival sandbox game
-    Copyright (C) 2019 Ben O'Neill <ben@oneill.sh>
-*/
+/**
+ * @file esc.h
+ * @author Ben O'Neill <ben@oneill.sh>
+ *
+ * Entity component system.
+ */
 
 #ifndef AWOL_ECS_H
 #define AWOL_ECS_H
@@ -14,21 +16,21 @@
 #define MAX_ENTITIES    65536
 #define MAX_COMPONENTS  256
 
-enum {
+typedef enum {
 	COMPONENT_POSITION,
 	COMPONENT_TEXTURE,
 	COMPONENT_DIRECTION,
-};
+} ComponentType;
 
-enum {
+typedef enum {
 	DIRECTION_UP,
 	DIRECTION_DOWN,
 	DIRECTION_LEFT,
 	DIRECTION_RIGHT,
-};
+} Direction;
 
 typedef struct {
-	int type;
+	ComponentType type;
 	uuid_t uuid;
 } Component;
 
@@ -45,7 +47,7 @@ typedef struct {
 
 typedef struct {
 	Component parent;
-	int direction;
+	Direction direction;
 	TextureComponent *textures[5];
 } DirectionComponent;
 
@@ -55,14 +57,14 @@ typedef struct {
 } Entity;
 
 Entity *add_entity(void);
-void attach_component(Entity *entity, Component *component);
-Component *create_component(int component_type);
-Component *get_component_by_type(Entity *entity, int component_type);
-Component *get_component_by_uuid(Entity *entity, uuid_t uuid);
-Entity *get_entity(uuid_t uuid);
+bool attach_component(Entity *, Component *);
+Component *create_component(ComponentType);
+Component *get_component_by_type(Entity *, ComponentType);
+Component *get_component_by_uuid(Entity *, uuid_t);
+Entity *get_entity(uuid_t);
 void init_ecs(void);
 void quit_ecs(void);
-bool remove_component(Entity *entity, uuid_t uuid);
-bool remove_entity(uuid_t uuid);
+bool remove_component(Entity *, uuid_t);
+bool remove_entity(uuid_t);
 
 #endif

@@ -1,7 +1,9 @@
-/*
-    AWOL: A 2D top down survival sandbox game
-    Copyright (C) 2019 Ben O'Neill <ben@oneill.sh>
-*/
+/**
+ * @file game.h
+ * @author Ben O'Neill <ben@oneill.sh>
+ *
+ * Game logic.
+ */
 
 #ifndef GAME_H
 #define GAME_H
@@ -42,8 +44,8 @@ typedef struct {
 	Display display;
 } Game;
 
-void add_renderable_to_queue(Entity *renderable);
-void start_game(void);
 Game *get_game(void);
+void start_game(void);
+void update_keys(void);
 
 #endif

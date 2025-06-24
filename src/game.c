@@ -1,7 +1,9 @@
-/*
-    AWOL: A 2D top down survival sandbox game
-    Copyright (C) 2019 Ben O'Neill <ben@oneill.sh>
-*/
+/**
+ * @file game.c
+ * @author Ben O'Neill <ben@oneill.sh>
+ *
+ * Game logic.
+ */
 
 #include "game.h"
 #include "graphics.h"
@@ -10,21 +12,34 @@
 #include <time.h>
 #include <SDL2/SDL_image.h>
 
-bool keymap[4];
-Entity *render_queue[MAX_RENDERABLES];
-SDL_Texture *spritesheet;
-uuid_t *player_uuid;
-int render_queue_len = 0;
 Game *game;
+bool keymap[4];
+uuid_t *player_uuid;
+SDL_Texture *spritesheet;
 
-void add_renderable_to_queue(Entity *renderable)
-{
-	render_queue[render_queue_len] = renderable;
-	render_queue_len++;
+static void cleanup(void);
+static void init(void);
+static void init_map(void);
+static void init_player(void);
+
+Game *get_game(void) {
+	return game;
 }
 
-void update_keys(void)
-{
+void start_game(void) {
+	/* TODO framerate check */
+	init();
+
+	while (game->state) {
+		tick(game, keymap);
+		render(game);
+		SDL_Delay(1000 / FPS);
+	}
+
+	cleanup();
+}
+
+void update_keys(void) {
 	Entity *player = get_entity(*player_uuid);
 	PositionComponent *pos = (PositionComponent *) get_component_by_type(player, COMPONENT_POSITION);
 	DirectionComponent *dir = (DirectionComponent *) get_component_by_type(player, COMPONENT_DIRECTION);
@@ -47,8 +62,29 @@ void update_keys(void)
 	}
 }
 
-void init_map(void)
-{
+static void cleanup(void) {
+	free(game);
+	quit_ecs();
+	SDL_Quit();
+}
+
+static void init(void) {
+	SDL_Init(SDL_INIT_EVERYTHING);
+	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
+	init_ecs();
+
+	game = (Game *) malloc(sizeof(Game));
+	game->state = STATE_PLAY;
+	game->display.window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED, 960, 640, SDL_WINDOW_SHOWN);
+	game->display.renderer = SDL_CreateRenderer(game->display.window, 0, SDL_RENDERER_ACCELERATED);
+	
+	spritesheet = load_texture("assets/spritesheet.png");
+	init_map();
+	init_player();
+}
+
+static void init_map(void) {
 	for (int x = 0; x < MAP_WIDTH; x++) {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
 			Entity *tile = add_entity();
@@ -68,8 +104,7 @@ void init_map(void)
 	}
 }
 
-void init_player(void)
-{
+static void init_player(void) {
 	Entity *player = add_entity();
 	player_uuid = &(player->uuid);
 
@@ -89,122 +124,4 @@ void init_player(void)
 	attach_component(player, (Component *) direction);
 	attach_component(player, (Component *) position);
 	add_renderable_to_queue(player);
-}
-
-void init(void)
-{
-	SDL_Init(SDL_INIT_EVERYTHING);
-	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
-	init_ecs();
-
-	game = malloc(sizeof(Game));
-	game->state = STATE_PLAY;
-	game->display.window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, 960, 640, SDL_WINDOW_SHOWN);
-	game->display.renderer = SDL_CreateRenderer(game->display.window, 0, SDL_RENDERER_ACCELERATED);
-	
-	spritesheet = load_texture("assets/spritesheet.png");
-	init_map();
-	init_player();
-}
-
-void tick(void)
-{
-	SDL_Event e;
-
-	while (SDL_PollEvent(&e)) {
-		switch (e.type) {
-			case SDL_QUIT: game->state = STATE_EXIT; break;
-			case SDL_KEYDOWN:
-				if (e.key.keysym.sym == SDLK_w)
-					keymap[0] = true;
-				else if (e.key.keysym.sym == SDLK_a)
-					keymap[1] = true;
-				else if (e.key.keysym.sym == SDLK_s)
-					keymap[2] = true;
-				else if (e.key.keysym.sym == SDLK_d)
-					keymap[3] = true;
-				break;
-			case SDL_KEYUP:
-				if (e.key.keysym.sym == SDLK_w)
-					keymap[0] = false;
-				else if (e.key.keysym.sym == SDLK_a)
-					keymap[1] = false;
-				else if (e.key.keysym.sym == SDLK_s)
-					keymap[2] = false;
-				else if (e.key.keysym.sym == SDLK_d)
-					keymap[3] = false;
-				break;
-			default: break;
-		}
-	}
-	update_keys();
-}
-
-void render(void)
-{
-	DirectionComponent *dir;
-	TextureComponent *tex;
-	PositionComponent *pos;
-	SDL_Rect *dest;
-
-	SDL_SetRenderDrawColor(game->display.renderer, 255, 255, 255, 0);
-	SDL_RenderClear(game->display.renderer);
-	
-	for (int i = 0; i < render_queue_len; i++) {
-		tex = (TextureComponent *) get_component_by_type(render_queue[i], COMPONENT_TEXTURE);
-		pos = (PositionComponent *) get_component_by_type(render_queue[i], COMPONENT_POSITION);
-
-		if (tex == NULL) {
-			/* If it has no default texture, must be direction based */
-			dir = (DirectionComponent *) get_component_by_type(render_queue[i], COMPONENT_DIRECTION);
-			if (dir == NULL) {
-				printf("Entity without texture tried to render\n");
-				continue;
-			} else {
-				tex = dir->textures[dir->direction];
-				if (tex == NULL) {
-					printf("Entity without texture tried to render\n");
-					continue;
-				}
-			}
-		}
-
-		if (pos == NULL) {
-			printf("Entity without position tried to render\n");
-			continue;
-		} else {
-			dest = get_dest_rect(tex, pos);
-			SDL_RenderCopy(game->display.renderer, tex->texture, &(tex->src), dest);
-			free(dest);
-		}
-	}
-
-	SDL_RenderPresent(game->display.renderer);
-}
-
-void cleanup(void)
-{
-	free(game);
-	quit_ecs();
-	SDL_Quit();
-}
-
-void start_game(void)
-{
-	/* TODO framerate check */
-	init();
-
-	while (game->state) {
-		tick();
-		render();
-		SDL_Delay(1000 / FPS);
-	}
-
-	cleanup();
-}
-
-Game *get_game(void)
-{
-	return game;
 }
